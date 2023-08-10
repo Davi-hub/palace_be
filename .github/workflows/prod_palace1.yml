@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'Palace1'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9F19B63F08BF4979843B6D8AD26D6C3E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AEE7963745454EBBBB43A9F39D9D3BF6 }}
           package: '*.war'
