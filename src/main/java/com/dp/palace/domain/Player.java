@@ -1,4 +1,4 @@
-package com.palace_be;
+package com.dp.palace.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;

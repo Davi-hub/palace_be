@@ -1,4 +1,4 @@
-package com.palace_be;
+package com.dp.palace.domain;
 
 public enum CardSuit {
     HEARTS,

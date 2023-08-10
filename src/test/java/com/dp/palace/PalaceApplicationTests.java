@@ -1,10 +1,10 @@
-package com.palace_be;
+package com.dp.palace;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PalaceBEApplicationTests {
+class PalaceApplicationTests {
 
 	@Test
 	void contextLoads() {

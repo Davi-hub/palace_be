@@ -1,12 +1,12 @@
-package com.palace_be.controllers;
+package com.dp.palace.model;
 
 import java.util.ArrayList;
 
-import com.palace_be.Card;
-import com.palace_be.Ids;
+import com.dp.palace.domain.Card;
+import com.dp.palace.model.Ids;
 
 public class ReadyData {
-    private ArrayList<Card> cardsOnCards; 
+    private ArrayList<Card> cardsOnCards;
     private ArrayList<Card> cardsInHand;
     private Ids ids;
 

@@ -1,4 +1,7 @@
-package com.palace_be;
+package com.dp.palace.model;
+
+import com.dp.palace.domain.Card;
+import com.dp.palace.domain.Player;
 
 import java.util.ArrayList;
 

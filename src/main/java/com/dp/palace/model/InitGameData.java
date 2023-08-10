@@ -1,13 +1,13 @@
-package com.palace_be;
+package com.dp.palace.model;
 
 import java.util.UUID;
 
-public class InitGameRes {
+public class InitGameData {
     private UUID gameId;
     private UUID playerId;
     private int playerIndex;
 
-    public InitGameRes(UUID gameId, UUID playerId, int playerIndex) {
+    public InitGameData(UUID gameId, UUID playerId, int playerIndex) {
         this.gameId = gameId;
         this.playerId = playerId;
         this.playerIndex = playerIndex;

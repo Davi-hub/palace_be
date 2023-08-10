@@ -1,4 +1,4 @@
-package com.palace_be;
+package com.dp.palace.model;
 
 import java.util.UUID;
 

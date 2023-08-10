@@ -1,4 +1,4 @@
-package com.palace_be;
+package com.dp.palace.domain;
 
 public enum CardFigure {
     ONE(1),
@@ -25,8 +25,5 @@ public enum CardFigure {
 
     public int getValue() {
         return value;
-    }
-
-    public void setValue(int value) {
     }
 }

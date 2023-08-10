@@ -1,15 +1,23 @@
-package com.palace_be.utils;
+package com.dp.palace.controllers;
 
-import com.palace_be.*;
-import org.springframework.stereotype.Component;
+import com.dp.palace.domain.Card;
+import com.dp.palace.domain.Deck;
+import com.dp.palace.domain.Game;
+import com.dp.palace.domain.Player;
+import com.dp.palace.model.DrawData;
+import com.dp.palace.model.GameData;
+import com.dp.palace.model.Ids;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Component
-public class GameControllerHelper {
+@Service
+public class GameService {
 
     public Game getGameFromJSON(UUID gameId) {
-        GameData gameData = GameDataFileHandler.loadGameData(gameId);
+        GameData gameData = GameRepository.loadGameData(gameId);
         Game game = new Game();
         game.setPlayerNumber(game.getPlayerNumber());
         game.setPlayers(gameData.getPlayers());
@@ -78,7 +86,7 @@ public class GameControllerHelper {
                 game.setWinner(player);
             }
 
-            GameDataFileHandler.saveGameData(ids.getGameId(), getGameDataFromFE(game, ids.getPlayerId(), false));
+            GameRepository.saveGameData(ids.getGameId(), getGameDataFromFE(game, ids.getPlayerId(), false));
         }
     }
 

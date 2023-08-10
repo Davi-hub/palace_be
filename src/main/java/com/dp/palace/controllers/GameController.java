@@ -1,4 +1,4 @@
-package com.palace_be.controllers;
+package com.dp.palace.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.palace_be.utils.GameControllerHelper;
+import com.dp.palace.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,32 +14,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.palace_be.Card;
-import com.palace_be.DrawData;
-import com.palace_be.Game;
-import com.palace_be.GameData;
-import com.palace_be.GameDataFileHandler;
-import com.palace_be.Ids;
-import com.palace_be.InitGameRes;
-import com.palace_be.JoinGameData;
-import com.palace_be.Message;
-import com.palace_be.NewGameData;
-import com.palace_be.Player;
+import com.dp.palace.domain.Card;
+import com.dp.palace.domain.Game;
+import com.dp.palace.utils.Message;
+import com.dp.palace.domain.Player;
 
 @RestController
 public class GameController {
     Map<UUID, Game> gameMap = new HashMap<>();
 
-    private final GameControllerHelper helper;
+    private final GameService gameService;
 
     @Autowired
-    public GameController(GameControllerHelper helper) {
-        this.helper = helper;
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/new-game")
-    public ResponseEntity<InitGameRes> newGame(@RequestBody NewGameData newGameData) {
+    public ResponseEntity<InitGameData> newGame(@RequestBody NewGameData newGameData) {
         UUID gameId = UUID.randomUUID();
         Game game = new Game(newGameData.getPlayerNumber());
         game.increaseCurrentPlayerIndex();
@@ -47,32 +39,29 @@ public class GameController {
         firstPlayer.setPlayerId(UUID.randomUUID());
         firstPlayer.setPlayerName(newGameData.getFirstPlayerName());
         gameMap.put(gameId, game);
-        InitGameRes res = new InitGameRes(gameId, firstPlayer.getPlayerId(), 0);
+        InitGameData res = new InitGameData(gameId, firstPlayer.getPlayerId(), 0);
 
         return ResponseEntity.ok(res);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/join")
-    public ResponseEntity<InitGameRes> joinGame(@RequestBody JoinGameData joinGameData) {
+    public ResponseEntity<InitGameData> joinGame(@RequestBody JoinGameData joinGameData) {
         Game game = this.gameMap.get(joinGameData.getGameId());
         Player player = game.getPlayers().get(game.getCurrentPlayerIndex());
         player.setPlayerId(UUID.randomUUID());
         player.setPlayerName(joinGameData.getPlayerName());
         int currentPlayerIndex = game.getCurrentPlayerIndex();
-        InitGameRes res = new InitGameRes(joinGameData.getGameId(), player.getPlayerId(), currentPlayerIndex);
+        InitGameData res = new InitGameData(joinGameData.getGameId(), player.getPlayerId(), currentPlayerIndex);
         game.increaseCurrentPlayerIndex();
         return ResponseEntity.ok(res);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/get-players")
     public ResponseEntity<ArrayList<Player>> getPlayers(@RequestBody Ids ids) {
         Game game = this.gameMap.get(ids.getGameId());
-        return ResponseEntity.ok(helper.getGameDataFromFE(game, ids.getPlayerId(), true).getPlayers());
+        return ResponseEntity.ok(gameService.getGameDataFromFE(game, ids.getPlayerId(), true).getPlayers());
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/get-game")
     public ResponseEntity<GameData> getGame(@RequestBody Ids ids) {
         Game game = null;
@@ -80,7 +69,7 @@ public class GameController {
             game = this.gameMap.get(ids.getGameId());
 
             if (game == null) {
-                game = helper.getGameFromJSON(ids.getGameId());
+                game = gameService.getGameFromJSON(ids.getGameId());
             }
             this.gameMap.put(ids.getGameId(), game);
         } catch (Exception e) {
@@ -88,14 +77,13 @@ public class GameController {
         }
 
         if (game != null) {
-            GameData response = helper.getGameDataFromFE(game, ids.getPlayerId(), true);
+            GameData response = gameService.getGameDataFromFE(game, ids.getPlayerId(), true);
             return ResponseEntity.ok(response);
         }
 
         return ResponseEntity.notFound().build();
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/ready")
     public ResponseEntity<Message> playerIsReady(@RequestBody ReadyData readyData) {
         Game game = this.gameMap.get(readyData.getIds().getGameId());
@@ -111,7 +99,6 @@ public class GameController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/is-eb-ready")
     public ResponseEntity<Boolean> isEverybodyReady(@RequestBody Ids ids) {
         Game game = this.gameMap.get(ids.getGameId());
@@ -120,35 +107,31 @@ public class GameController {
                 .stream().allMatch(Player::getIsReady);
         if (everybodyIsReady) {
             game.setGameStatus(1);
-            GameDataFileHandler.saveGameData(ids.getGameId(), helper.getGameDataFromFE(game, ids.getPlayerId(), false));
+            GameRepository.saveGameData(ids.getGameId(), gameService.getGameDataFromFE(game, ids.getPlayerId(), false));
             return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.ok(false);
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/played-a-card-in-hand")
     public ResponseEntity<Boolean> playedACardInHand(@RequestBody DrawData data) {
-        helper.playedACard(gameMap, data, "inHand");
+        gameService.playedACard(gameMap, data, "inHand");
         return ResponseEntity.ok(true);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/played-a-card-on-card")
     public ResponseEntity<Boolean> playedACardOnCard(@RequestBody DrawData data) {
-        helper.playedACard(gameMap, data, "onCard");
+        gameService.playedACard(gameMap, data, "onCard");
         return ResponseEntity.ok(true);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/played-a-card-on-table")
     public ResponseEntity<Boolean> playedACardOnTable(@RequestBody DrawData data) {
-        helper.playedACard(gameMap, data, "onTable");
+        gameService.playedACard(gameMap, data, "onTable");
         return ResponseEntity.ok(true);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/get-card-on-table")
     public ResponseEntity<Card> getCardOnTable(@RequestBody DrawData data) {
         Ids ids = data.getIds();
@@ -159,7 +142,6 @@ public class GameController {
         return ResponseEntity.ok(card);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/draw-the-pile")
     public ResponseEntity<Boolean> drawThePile(@RequestBody Ids ids) {
         Game game = this.gameMap.get(ids.getGameId());
@@ -175,6 +157,4 @@ public class GameController {
 
         return ResponseEntity.ok(true);
     }
-
-
 }
