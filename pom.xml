@@ -32,6 +32,15 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version> <!-- A megfelelő verziót adj meg itt -->
+				<configuration>
+					<source>17</source> <!-- A forráskód Java verziója -->
+					<target>17</target> <!-- A cél Java verziója -->
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!--<configuration>
