@@ -14,18 +14,14 @@ public class PalaceApplication {
 		SpringApplication.run(PalaceApplication.class, args);
 	}
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer(@Value("${allow.domain.1}") String allowDomain1,
-										   @Value("${allow.domain.2}") String allowDomain2) {
-		String[] allowDomains = new String[2];
-		allowDomains[0] = allowDomain1;
-		allowDomains[1] = allowDomain2;
-
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins(allowDomains);
-			}
-		};
+	@Configuration
+	public class WebConfig implements WebMvcConfigurer {
+		@Override
+		public void addCorsMappings(CorsRegistry registry) {
+			registry.addMapping("/**")
+					.allowedOrigins("https://palace-24472.web.app") // Engedélyezett eredeti forrás
+					.allowedMethods("GET", "POST", "PUT", "DELETE") // Engedélyezett HTTP metódusok
+					.allowCredentials(true); // Szükséges, ha autentikáció vagy sütik használatakor
+		}
 	}
 }
