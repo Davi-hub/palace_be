@@ -11,7 +11,6 @@
 	<groupId>com.pd.palace</groupId>
 	<artifactId>palace</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
 	<name>palace</name>
 	<description></description>
 	<properties>
@@ -40,6 +39,14 @@
 						-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005
 					</jvmArguments>
 				</configuration>-->
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>2.4.0</version>
+				<configuration>
+					<deploy.version>0.9</deploy.version>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

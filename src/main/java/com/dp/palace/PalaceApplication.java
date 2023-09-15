@@ -20,9 +20,9 @@ public class PalaceApplication {
 		@Override
 		public void addCorsMappings(CorsRegistry registry) {
 			registry.addMapping("/**")
-					.allowedOrigins("https://palace-24472.web.app/") // Engedélyezett eredeti forrás
-					.allowedMethods("GET", "POST", "PUT", "DELETE") // Engedélyezett HTTP metódusok
-					.allowCredentials(true); // Szükséges, ha autentikáció vagy sütik használatakor
+					.allowedOrigins("https://palace-24472.web.app/")
+					.allowedMethods("GET", "POST", "PUT", "DELETE")
+					.allowCredentials(true);
 		}
 	}
 }
